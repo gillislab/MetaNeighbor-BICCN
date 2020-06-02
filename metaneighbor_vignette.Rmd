@@ -2,8 +2,8 @@
 title: "Evaluation of cluster replicability with MetaNeighbor"
 output:
     pdf_document: default
-    html_document:
-        keep_md: true
+    md_document:
+        variant: markdown
 ---
 
 ```{r setup, include=FALSE}
