@@ -430,8 +430,8 @@ mn_heatmap(aurocs_1v1)</code></pre>
 <h2>How replicable are my clusters? Using pre-trained MetaNeighbor to compare to reference BICCN data</h2>
 <p>The BICCN MOp data is the most comprehensive and robust reference for mouse cortex currently available. Since annotation of clusters is a large bottleneck of single-cell RNA-seq analysis, users with novel brain-related data may find it helpful to compare results to the BICCN data to infer cluster labels, or to determine whether additional quality control is required. Alternatively, users with annotated clusters may wish to measure replicability of their transcriptional profiles directly.</p>
 <p>MetaNeighbor offers the possibility of pre-training a model, which lets users run quick comparisons against a low-memory reference dataset. These models were generated using the following code:</p>
-<pre class="r"><code># DO NOT RUN: Code used to generate pre-trained MetaNeighbor model
-#             for the BICCN mouse MOp dataset
+<pre class="r"><code># NOT RUN: Code used to generate pre-trained MetaNeighbor models
+#          for the BICCN mouse MOp dataset
 if (FALSE) {
     dataset = readRDS(&quot;data/full_data.rds&quot;)
     hvg = readLines(&quot;data/hvg.txt&quot;)
@@ -441,14 +441,14 @@ if (FALSE) {
         study_id = dataset$study_id, cell_type = dataset$subclass_label
     )
     write.table(pretrained_model,
-                &quot;pretrained_data/pretrained_biccn_mouse_mop_subclasses.txt&quot;)
+                &quot;pretrained_models/pretrained_biccn_mouse_mop_subclasses.txt&quot;)
     
     pretrained_model = MetaNeighbor::trainModel(
         var_genes = hvg, dat = dataset,
         study_id = dataset$study_id, cell_type = dataset$cluster_label
     )
     write.table(pretrained_model,
-                &quot;pretrained_data/pretrained_biccn_mouse_mop_clusters.txt&quot;)
+                &quot;pretrained_models/pretrained_biccn_mouse_mop_clusters.txt&quot;)
 }</code></pre>
 <div id="example-1-comparing-an-external-dataset-to-the-biccn-reference-clusters" class="section level3">
 <h3>Example 1: comparing an external dataset to the BICCN reference clusters</h3>
@@ -456,7 +456,7 @@ if (FALSE) {
 <pre class="r"><code>paul_2017 = readRDS(&quot;data/paul.rds&quot;)
 
 pretrained_biccn = as.matrix(read.table(
-    &quot;pretrained_data/pretrained_biccn_mouse_mop_clusters.txt&quot;, check.names = FALSE
+    &quot;pretrained_models/pretrained_biccn_mouse_mop_clusters.txt&quot;, check.names = FALSE
 ))</code></pre>
 <p>We run MetaNeighbor, similar to the full dataset, except that we provide the trained model instead of highly variable genes - the HVG list is already contained in the trained model.</p>
 <pre class="r"><code>aurocs_1v1 = MetaNeighbor::MetaNeighborUS(
@@ -487,11 +487,11 @@ pretrained_biccn = as.matrix(read.table(
 </div>
 <div id="example-2-comparing-one-of-the-biccn-datasets-to-the-biccn-reference-subclasses" class="section level3">
 <h3>Example 2: comparing one of the BICCN datasets to the BICCN reference subclasses</h3>
-<p>To further illustrate differences in memory consumption and the importance of swapping test and train, we compare one of the BICCN datasets with the pre-trained model. We chose to use the 10X cells v2 dataset, because it’s the largest dataset. We subset our compact dataset to 10Xv2 cells (the full version can be built from the dowload_data.R and make_sce.R scripts), and load the pre-trained model, which can be accessed from [TBD].</p>
+<p>To further illustrate differences in memory consumption and the importance of swapping test and train, we compare one of the BICCN datasets with the pre-trained model. We chose to use the 10X cells v2 dataset, because it’s the largest dataset. We subset our compact dataset to 10Xv2 cells (the full version can be built from the dowload_data.R and make_sce.R scripts), and load the pre-trained model:</p>
 <pre class="r"><code>tenx_cells = dataset[, dataset$study_id == &quot;scCv2&quot;]
 
 pretrained_biccn = as.matrix(read.table(
-    &quot;pretrained_data/pretrained_biccn_mouse_mop_subclasses.txt&quot;, check.names = FALSE
+    &quot;pretrained_models/pretrained_biccn_mouse_mop_subclasses.txt&quot;, check.names = FALSE
 ))</code></pre>
 <p>We run MetaNeighbor against the pre-trained BICCN subclasses:</p>
 <pre class="r"><code>aurocs_1v1 = MetaNeighbor::MetaNeighborUS(
@@ -609,7 +609,7 @@ text(ref_aurocs[is_outlier], aurocs_1v1[is_outlier]-0.01, comparison_names[is_ou
 <li><p>study_id: A vector of labels indicating the study of origin for each cell. Here these have been stored in the colData of our SingleCellExperiment object, so we can access them directly.</p></li>
 <li><p>cell_type: A vector of labels indicating the transcriptomic identity of each cell. We are interested in comparing datasets at subclass level.</p></li>
 </ul>
-<p>There are also three parameters to specify:</p>
+<p>There are also three optional parameters to specify:</p>
 <ul>
 <li><p>fast_version: This parameter toggles the use of the legacy MetaNeighborUS function, which is not advised for datasets with &gt;10K cells. The fast version of MetaNeighbor approximates the legacy function, but fully parallelizes and vectorizes neighbor voting using matrix multiplication of ranked cell profile vectors.</p></li>
 <li><p>node_degree_normalization: This parameter toggles the use of node degree normalization. This parameter was initially designed to mitigate the impact of differential transcriptome coverage across cell clusters, such that those with a greater number of non-zero genes would not be universally ‘loved’ by all others. However, we have since found that good variable gene selection and paired testing/training is sufficient to avoid this issue. We advise setting this to FALSE for most applications, as it can create artifacts associated with cell composition differences between datasets.</p></li>

@@ -108,8 +108,8 @@ The BICCN MOp data is the most comprehensive and robust reference for mouse cort
 MetaNeighbor offers the possibility of pre-training a model, which lets users run quick comparisons against a low-memory reference dataset. These models were generated using the following code:
 
 ```{r}
-# DO NOT RUN: Code used to generate pre-trained MetaNeighbor model
-#             for the BICCN mouse MOp dataset
+# NOT RUN: Code used to generate pre-trained MetaNeighbor models
+#          for the BICCN mouse MOp dataset
 if (FALSE) {
     dataset = readRDS("data/full_data.rds")
     hvg = readLines("data/hvg.txt")
@@ -119,14 +119,14 @@ if (FALSE) {
         study_id = dataset$study_id, cell_type = dataset$subclass_label
     )
     write.table(pretrained_model,
-                "pretrained_data/pretrained_biccn_mouse_mop_subclasses.txt")
+                "pretrained_models/pretrained_biccn_mouse_mop_subclasses.txt")
     
     pretrained_model = MetaNeighbor::trainModel(
         var_genes = hvg, dat = dataset,
         study_id = dataset$study_id, cell_type = dataset$cluster_label
     )
     write.table(pretrained_model,
-                "pretrained_data/pretrained_biccn_mouse_mop_clusters.txt")
+                "pretrained_models/pretrained_biccn_mouse_mop_clusters.txt")
 }
 ```
 
@@ -138,7 +138,7 @@ As a first example, we will compare the data from Paul et al. (2017) to the BICC
 paul_2017 = readRDS("data/paul.rds")
 
 pretrained_biccn = as.matrix(read.table(
-    "pretrained_data/pretrained_biccn_mouse_mop_clusters.txt", check.names = FALSE
+    "pretrained_models/pretrained_biccn_mouse_mop_clusters.txt", check.names = FALSE
 ))
 ```
 
@@ -176,13 +176,13 @@ We recover expected top hits for these two cell types (ChC = Chandelier, Som-Nos
 
 ### Example 2: comparing one of the BICCN datasets to the BICCN reference subclasses
 
-To further illustrate differences in memory consumption and the importance of swapping test and train, we compare one of the BICCN datasets with the pre-trained model. We chose to use the 10X cells v2 dataset, because it's the largest dataset. We subset our compact dataset to 10Xv2 cells (the full version can be built from the dowload_data.R and make_sce.R scripts), and load the pre-trained model, which can be accessed from [TBD].
+To further illustrate differences in memory consumption and the importance of swapping test and train, we compare one of the BICCN datasets with the pre-trained model. We chose to use the 10X cells v2 dataset, because it's the largest dataset. We subset our compact dataset to 10Xv2 cells (the full version can be built from the dowload_data.R and make_sce.R scripts), and load the pre-trained model:
 
 ```{r}
 tenx_cells = dataset[, dataset$study_id == "scCv2"]
 
 pretrained_biccn = as.matrix(read.table(
-    "pretrained_data/pretrained_biccn_mouse_mop_subclasses.txt", check.names = FALSE
+    "pretrained_models/pretrained_biccn_mouse_mop_subclasses.txt", check.names = FALSE
 ))
 ```
 
@@ -282,7 +282,7 @@ Below we provide a detailed description of MetaNeighbor's parameters:
 
 - cell_type: A vector of labels indicating the transcriptomic identity of each cell. We are interested in comparing datasets at subclass level.
 
-There are also three parameters to specify:
+There are also three optional parameters to specify:
 
 - fast_version: This parameter toggles the use of the legacy MetaNeighborUS function, which is not advised for datasets with >10K cells. The fast version of MetaNeighbor approximates the legacy function, but fully parallelizes and vectorizes neighbor voting using matrix multiplication of ranked cell profile vectors. 
 
