@@ -2,8 +2,8 @@
 title: "Evaluation of cluster replicability with MetaNeighbor"
 output:
     pdf_document: default
-    md_document:
-        variant: markdown
+    html_document:
+        keep_md: true
 ---
 
 ```{r setup, include=FALSE}
@@ -260,7 +260,7 @@ Run times are low overall and should not be a concern. Reducing the BICCN data t
 
 ### <a name="interpretation_appendix"></a> Appendix A: Interpretation of one_vs_best heatmaps
 
-![Heatmap interpretation \label{fig_heatmap}](fig/mn_heatmap_explanation.png)
+![Heatmap interpretation \label{fig_heatmap}](metaneighbor_vignette_files/mn_heatmap_explanation.png)
 
 The heatmap (Fig. \ref{fig_heatmap}) shows the results of MetaNeighbor tests for human, marmoset and mouse GABAergic subclasses from the BICCN Non-Human Primate working group. Dark red 3x3 blocks along the diagonal indicate high similarity among the three datasets. We discuss how to interpret this figure in more detail in the following.
 
