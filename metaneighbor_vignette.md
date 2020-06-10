@@ -248,8 +248,9 @@ head(sort(aurocs_1v1["scCv2|L6 IT Car3",], decreasing = TRUE))
 ##       0.10342055       0.08925864
 ```
 
-If cell type composition is balanced across datasets, we find that replicability scores are well captured by one-directional testing and training. Also, if the population is present in the test dataset but is missing in some of the reference datasets we correctly find that there are no strong hits. However, when there are populations in the training data that aren't in the testing data, these can show up as incorrect strong matches: 
+If cell type composition is balanced across datasets, as in the example above, we find that replicability scores are well captured by one-directional testing and training. Also, if the population is present in the test dataset but is missing in some of the reference datasets we correctly find that there are no strong hits. However, when there are populations in the training data that aren't in the testing data, these can show up as incorrect strong matches: 
 
+[//]: (Does it make more sense to use Endo here? It's not clear which 'incorrect strong match' is being referred to in the example below.)
 
 ```r
 head(sort(aurocs_1v1["scCv2|Sncg",], decreasing = TRUE), 10)
@@ -264,6 +265,7 @@ head(sort(aurocs_1v1["scCv2|Sncg",], decreasing = TRUE), 10)
 
 We can further investigate score discrepancies by directly comparing to MetaNeighbor output generated from the full dataset:
 
+[//]: (perhaps we could say something more descriptive than "score discrepancies" here e.g., "Directly comparing the output from the pretrained model to MetaNeighbor's usual output can help identify incorrect strong matches. We run MetaNeighbor using the full dataset below.")
 
 ```r
 ref_aurocs = MetaNeighbor::MetaNeighborUS(
@@ -316,7 +318,7 @@ Run times are low overall and should not be a concern. Reducing the BICCN data t
 
 ![Heatmap interpretation \label{fig_heatmap}](metaneighbor_vignette_files/mn_heatmap_explanation.png)
 
-The heatmap (Fig. \ref{fig_heatmap}) shows the results of MetaNeighbor tests for human, marmoset and mouse GABAergic subclasses from the BICCN Non-Human Primate working group. Dark red 3x3 blocks along the diagonal indicate high similarity among the three datasets. We discuss how to interpret this figure in more detail in the following.
+The heatmap above shows the results of MetaNeighbor tests for human, marmoset and mouse GABAergic subclasses from the BICCN Non-Human Primate working group. Dark red 3x3 blocks along the diagonal indicate high similarity among the three datasets. We discuss how to interpret this figure in more detail in the following.
 
 MetaNeighbor measures the similarity between groups of cells based on gene expression patterns. It is formalized as a supervised learning task by treating one group of cells as a training set, and reporting test performance for other cell groups as the area under the receiver operating characteristic curve (AUROC). In the heatmap, each column shows the performance for a single training group across three test datasets. Colors indicate the train-test performance, where red is high, yellow is random, and blue is low. AUROCs are computed between the two closest neighbors in the test dataset, where the closer neighbor will have the higher score. All others are test groups shown in gray (NA). Thus, each column contains 6 non-NA values. 
 
@@ -328,13 +330,13 @@ The first test is circular: if we look within the human dataset (1) we find that
 
 Below we provide a detailed description of MetaNeighbor's parameters:
 
-- var_genes: A vector of genes. In this case, our dataset has already been reduced to hvg so this is redundant.
+- var_genes: A vector of genes. 
 
 - dat: A SingleCellExperiment object where expression data for all datasets can be found as a merged matrix in the first assay slot.
 
-- study_id: A vector of labels indicating the study of origin for each cell. Here these have been stored in the colData of our SingleCellExperiment object, so we can access them directly.
+- study_id: A vector of labels indicating the study of origin for each cell. 
 
-- cell_type: A vector of labels indicating the transcriptomic identity of each cell. We are interested in comparing datasets at subclass level.
+- cell_type: A vector of labels indicating the transcriptomic identity of each cell. 
 
 There are also three optional parameters to specify:
 
