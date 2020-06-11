@@ -1,12 +1,4 @@
----
-title: "Evaluation of cluster replicability with MetaNeighbor"
-output:
-    pdf_document: default
-    html_document:
-        keep_md: true
----
-
-
+# Evaluation of cluster replicability with MetaNeighbor
 
 The Brain Initiative Cell Census Network (BICCN) mini-atlas project was designed to define a census of transcriptomic cell types in the mouse primary motor cortex (MOp) by sampling across diverse single-cell RNA-sequencing protocols. In the associated manuscript, "An integrated multi-modal transcriptomic and epigenomic atlas of mouse primary motor cortex cell types", MetaNeighbor was used to measure cluster agreement across independent datasets. 
 
