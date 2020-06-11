@@ -1,1 +1,3 @@
-# MetaNeighbor-BICCN
+# Evaluation of BICCN cluster replicability with MetaNeighbor
+
+In this vignette, we reproduce the MetaNeighbor cluster replicability analyses presented in the [BICCN molecular mini-atlas manuscript](https://www.biorxiv.org/content/10.1101/2020.02.29.970558v2), and provide guidance for users wishing to rapidly compare their own data to the BICCN MOp reference. You can visualize the vignette [online](./metaneighbor_vignette.md) or download the vignette in [PDF format](./metaneighbor_vignette.pdf).
