@@ -1,4 +1,12 @@
-# Evaluation of cluster replicability with MetaNeighbor
+---
+title: "Evaluation of cluster replicability with MetaNeighbor"
+output:
+    pdf_document: default
+    html_document:
+        keep_md: true
+---
+
+
 
 The Brain Initiative Cell Census Network (BICCN) mini-atlas project was designed to define a census of transcriptomic cell types in the mouse primary motor cortex (MOp) by sampling across diverse single-cell RNA-sequencing protocols. In the associated manuscript, "An integrated multi-modal transcriptomic and epigenomic atlas of mouse primary motor cortex cell types", MetaNeighbor was used to measure cluster agreement across independent datasets. 
 
@@ -250,22 +258,20 @@ head(sort(aurocs_1v1["scCv2|L6 IT Car3",], decreasing = TRUE))
 
 If cell type composition is balanced across datasets, as in the example above, we find that replicability scores are well captured by one-directional testing and training. Also, if the population is present in the test dataset but is missing in some of the reference datasets we correctly find that there are no strong hits. However, when there are populations in the training data that aren't in the testing data, these can show up as incorrect strong matches: 
 
-[//]: (Does it make more sense to use Endo here? It's not clear which 'incorrect strong match' is being referred to in the example below.)
 
 ```r
-head(sort(aurocs_1v1["scCv2|Sncg",], decreasing = TRUE), 10)
+head(sort(aurocs_1v1["scCv2|Endo",], decreasing = TRUE), 10)
 ```
 
 ```
-##  scCv2|Sncg snCv3M|Sncg   snSS|Sncg snCv3Z|Sncg  scCv3|Sncg   scSS|Sncg 
-##   0.9795165   0.9696532   0.9683351   0.9668178   0.9363735   0.9321803 
-##  snCv2|Sncg   snCv3M|CR   snCv2|Vip    snSS|Vip 
-##   0.9274354   0.4888706   0.2207534   0.1869917
+##  scCv2|Endo snCv3M|Endo  scCv3|Endo  snCv2|Endo snCv3M|VLMC   scSS|Endo 
+##   0.9635843   0.9444217   0.9243138   0.9228041   0.9134615   0.9058920 
+## snCv3Z|Endo snCv3M|Peri  scCv3|VLMC   snSS|Endo 
+##   0.8740187   0.8636116   0.8327878   0.8320972
 ```
 
-We can further investigate score discrepancies by directly comparing to MetaNeighbor output generated from the full dataset:
+Directly comparing the output from the pretrained model to MetaNeighbor's usual output can help identify incorrect strong matches. We run MetaNeighbor using the full dataset below:
 
-[//]: (perhaps we could say something more descriptive than "score discrepancies" here e.g., "Directly comparing the output from the pretrained model to MetaNeighbor's usual output can help identify incorrect strong matches. We run MetaNeighbor using the full dataset below.")
 
 ```r
 ref_aurocs = MetaNeighbor::MetaNeighborUS(
@@ -288,10 +294,12 @@ comparison_names = paste(comparison_names[,1], comparison_names[,2], sep = " vs 
 is_outlier = aurocs_1v1 > 0.8 & ref_aurocs < 0.5
 
 par(mfrow = c(1,2), mar=c(5,4,2,2)+0.1)
-plot(ref_aurocs, aurocs_1v1, pch = 16)
+plot(ref_aurocs, aurocs_1v1, pch = 16,
+     xlab = "AUROC full model", ylab = "AUROC pretrained")
 rect(0.3, 0.8, 0.6, 0.9, lty = "dashed")
 
-plot(ref_aurocs, aurocs_1v1, xlim = c(0.3, 0.6), ylim = c(0.8, 0.9), pch=16, cex = 1)
+plot(ref_aurocs, aurocs_1v1, xlim = c(0.3, 0.6), ylim = c(0.8, 0.9), pch=16, cex = 1,
+     xlab = "AUROC full model", ylab = "AUROC pretrained")
 text(ref_aurocs[is_outlier], aurocs_1v1[is_outlier]-0.01, comparison_names[is_outlier],
      cex = 1)
 ```
@@ -330,13 +338,13 @@ The first test is circular: if we look within the human dataset (1) we find that
 
 Below we provide a detailed description of MetaNeighbor's parameters:
 
-- var_genes: A vector of genes. 
+- var_genes: A vector of genes.
 
 - dat: A SingleCellExperiment object where expression data for all datasets can be found as a merged matrix in the first assay slot.
 
-- study_id: A vector of labels indicating the study of origin for each cell. 
+- study_id: A vector of labels indicating the study of origin for each cell.
 
-- cell_type: A vector of labels indicating the transcriptomic identity of each cell. 
+- cell_type: A vector of labels indicating the transcriptomic identity of each cell.
 
 There are also three optional parameters to specify:
 
