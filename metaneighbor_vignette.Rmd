@@ -10,7 +10,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Our paper, "An integrated multi-modal transcriptomic and epigenomic atlas of mouse primary motor cortex cell types", defines a census of transcriptomic cell types in the mouse primary motor cortex (MOp) by integrating diverse single-cell RNA-sequencing protocols. We used MetaNeighbor to measure cluster agreement across independent datasets. 
+Our paper, "A transcriptomic and epigenomic cell atlas of the mouse primary motor cortex", defines a census of transcriptomic cell types in the mouse primary motor cortex (MOp) by integrating diverse single-cell RNA-sequencing protocols. We used MetaNeighbor to measure cluster agreement across independent datasets. 
 
 In this vignette, we reproduce the MetaNeighbor analyses presented in the paper, and provide guidance for users wishing to compare their own data to the BICCN MOp annotation. The vignette, associated scripts and data can be downloaded from <https://github.com/gillislab/MetaNeighbor-BICCN>, MetaNeighbor is available from <https://github.com/gillislab/MetaNeighbor>.
 
@@ -32,7 +32,7 @@ source("scripts/utility.R")
 
 ## Replicability of the independent clustering of transcriptomic datasets from mouse primary cortex (MOp): applying MetaNeighbor to the full BICCN mouse MOp dataset
 
-In this section, we reproduce the first steps of the MetaNeighbor analysis presented in the BICCN mouse MOp manuscript ("An integrated multi-modal transcriptomic and epigenomic atlas of mouse primary motor cortex cell types"). In this analysis, we quantified the agreement of the clusters obtained when clustering the seven single-cell RNA-seq datasets independently.
+In this section, we reproduce the first steps of the MetaNeighbor analysis presented in the BICCN mouse MOp transcriptomic and epigenomic atlas ("A transcriptomic and epigenomic cell atlas of the mouse primary motor cortex"). In this analysis, we quantified the agreement of the clusters obtained when clustering the seven single-cell RNA-seq datasets independently.
 
 We start by loading a compact version of the full BICCN dataset. For memory efficiency, we reduced the dataset to highly variable genes. Alternatively, we provide the code to generate the dataset with all genes. The highly variable genes are a subset of genes that were consisently detected as variable across all datasets (using MetaNeighbor::variableGenes):
 
